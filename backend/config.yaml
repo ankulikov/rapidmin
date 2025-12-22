@@ -1,0 +1,67 @@
+title: "Rapidmin Demo"
+
+providers:
+  - db
+
+menu:
+  - title: "Users"
+    page: users
+  - title: "Reports"
+    href: "/reports"
+
+pages:
+  - slug: users
+    title: "Users"
+    widgets:
+      - id: users_table
+        title: "Users"
+        type: table
+        provider:
+          name: db
+          sql:
+            query: |
+              SELECT id, name, email
+              FROM users
+              ORDER BY id ASC
+            bindings:
+              limit: query.limit
+        table:
+          columns:
+            - id
+            - id: name
+              title: "Name"
+              render:
+                type: link
+                text: "{{name}}"
+                url: "/users/{{id}}"
+            - id: email
+              title: "Email"
+              render:
+                type: link
+                text: "{{email}}"
+                url: "mailto:{{email}}"
+                external: true
+          filters:
+            - id: name
+              title: "Name contains"
+              type: text
+              column: name
+              mode: contains
+            - id: age
+              title: "Age"
+              type: number
+              column: age
+              operators: [gt, lt]
+            - id: created
+              title: "Created"
+              type: date
+              column: created_at
+              operators: [between, before, after]
+            - id: tags
+              title: "Tags"
+              type: select_multi
+              column: tag
+              values:
+                - { value: "vip", label: "VIP" }
+                - { value: "active", label: "Active" }
+                - { value: "banned", label: "Banned" }

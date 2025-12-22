@@ -1,0 +1,125 @@
+{
+  "title": "Rapidmin (Stub)",
+  "menu": [
+    { "title": "Users", "page": "users" },
+    { "title": "Reports", "page": "reports" }
+  ],
+  "pages": [
+    {
+      "slug": "users",
+      "title": "Users",
+      "widgets": [
+        {
+          "id": "users_table",
+          "title": "Users",
+          "type": "table",
+          "table": {
+            "columns": [
+              { "id": "id", "title": "ID" },
+              {
+                "id": "name",
+                "title": "Name",
+                "render": { "type": "link", "text": "{{name}}", "url": "/users/{{id}}" }
+              },
+              {
+                "id": "email",
+                "title": "Email",
+                "render": {
+                  "type": "link",
+                  "text": "{{email}}",
+                  "url": "https://google.com/search?q={{email}}",
+                  "external": true
+                }
+              }
+            ],
+            "filters": [
+              {
+                "id": "name",
+                "title": "Name contains",
+                "type": "text",
+                "column": "name",
+                "mode": "contains"
+              },
+              {
+                "id": "age",
+                "title": "Age",
+                "type": "number",
+                "column": "age",
+                "operators": ["gt", "lt"]
+              },
+              {
+                "id": "created",
+                "title": "Created between",
+                "type": "date",
+                "column": "created_at",
+                "operators": ["between", "before", "after"]
+              },
+              {
+                "id": "role",
+                "title": "Role",
+                "type": "select_one",
+                "column": "role",
+                "values": [
+                  { "value": "admin", "label": "Admin" },
+                  { "value": "user", "label": "User" },
+                  { "value": "moderator", "label": "Moderator" }
+                ]
+              },
+              {
+                "id": "tags",
+                "title": "Tags",
+                "type": "select_multi",
+                "column": "tag",
+                "values": [
+                  { "value": "vip", "label": "VIP" },
+                  { "value": "active", "label": "Active" },
+                  { "value": "banned", "label": "Banned" }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "reports",
+      "title": "Reports",
+      "widgets": [
+        {
+          "id": "reports_table",
+          "title": "Weekly Reports",
+          "type": "table",
+          "table": {
+            "columns": [
+              { "id": "week", "title": "Week" },
+              { "id": "status", "title": "Status" },
+              { "id": "owner", "title": "Owner" }
+            ],
+            "filters": [
+              {
+                "id": "status",
+                "title": "Status",
+                "type": "select_one",
+                "column": "status",
+                "values": [
+                  { "value": "ok", "label": "OK" },
+                  { "value": "delayed", "label": "Delayed" }
+                ]
+              },
+              {
+                "id": "owner",
+                "title": "Owner",
+                "type": "select_one",
+                "column": "owner",
+                "values": [
+                  { "value": "Ops", "label": "Ops" },
+                  { "value": "Finance", "label": "Finance" }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
