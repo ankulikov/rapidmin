@@ -49,7 +49,7 @@ pages:
               title: "Name contains"
               type: text
               target: name
-              mode: contains
+              operators: [contains]
             - id: age
               title: "Age"
               type: number

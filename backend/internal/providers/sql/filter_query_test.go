@@ -30,8 +30,8 @@ func TestMakeFilterCondDefaults(t *testing.T) {
 			expectedArgs: []any{"ann"},
 		},
 		{
-			name:         "contains from mode",
-			spec:         config.FilterSpec{ID: "name", Target: "name", Type: "text", Mode: "contains"},
+			name:         "contains from operators",
+			spec:         config.FilterSpec{ID: "name", Target: "name", Type: "text", Operators: []config.FilterOperator{"contains"}},
 			filter:       providers.Filter{Name: "name", Values: []string{"ann"}},
 			dbName:       "sqlite3",
 			expectedSQL:  "SELECT * FROM src WHERE name LIKE ?",

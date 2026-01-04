@@ -197,11 +197,11 @@ func sampleConfig() config.AppConfig {
 							},
 							Filters: []config.FilterSpec{
 								{
-									ID:     "name",
-									Title:  "Name",
-									Type:   "text",
-									Target: "name",
-									Mode:   "contains",
+									ID:        "name",
+									Title:     "Name",
+									Type:      "text",
+									Target:    "name",
+									Operators: []config.FilterOperator{"contains"},
 								},
 								{
 									ID:        "age",

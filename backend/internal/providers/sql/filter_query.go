@@ -13,12 +13,10 @@ func makeFilterCond(spec config.FilterSpec, value providers.Filter, dbName strin
 	typeHint *config.DataType) (sq.Sqlizer, error) {
 	operator := value.Operator
 	if operator == "" {
-		if spec.Mode != "" {
-			operator = config.FilterOperator(spec.Mode)
+		if len(spec.Operators) == 1 {
+			operator = spec.Operators[0]
 		} else if spec.Type == "select_multi" {
 			operator = "in"
-		} else if len(spec.Operators) == 1 {
-			operator = spec.Operators[0]
 		} else {
 			operator = "eq"
 		}

@@ -16,7 +16,7 @@ func TestBuildFilterConditions(t *testing.T) {
 	widget := config.Widget{
 		Table: &config.TableSpec{
 			Filters: []config.FilterSpec{
-				{ID: "name", Target: "name", Type: "text", Mode: "contains"},
+				{ID: "name", Target: "name", Type: "text", Operators: []config.FilterOperator{"contains"}},
 				{ID: "skip", Target: ""},
 			},
 		},
@@ -65,7 +65,7 @@ func TestBuildQuery(t *testing.T) {
 		},
 		Table: &config.TableSpec{
 			Filters: []config.FilterSpec{
-				{ID: "name", Target: "name", Type: "text", Mode: "contains"},
+				{ID: "name", Target: "name", Type: "text", Operators: []config.FilterOperator{"contains"}},
 			},
 		},
 	}

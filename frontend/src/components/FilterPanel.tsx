@@ -203,9 +203,6 @@ export function resolveOperators(filter: FilterSpec): string[] {
         const ops = filter.operators.filter((op) => op !== "eq");
         return hasEq ? [""].concat(ops) : ops;
     }
-    if (filter.mode) {
-        return [filter.mode];
-    }
     if (filter.type === "select_multi") {
         return ["in"];
     }

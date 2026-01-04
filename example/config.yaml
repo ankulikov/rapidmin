@@ -65,10 +65,10 @@ pages:
               title: Actors
           filters:
             - id: film_title
-              title: "Film title contains"
+              title: "Film title"
               type: text
               target: film_title
-              mode: contains
+              operators: [eq, contains]
             - id: release_year
               title: "Release year"
               type: number
@@ -78,7 +78,7 @@ pages:
               title: "Actor name contains"
               type: text
               target: actors
-              mode: contains
+              operators: [contains]
             - id: genre
               title: "Genre"
               type: select_multi

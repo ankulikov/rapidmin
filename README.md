@@ -84,7 +84,7 @@ filters:
     title: "Name contains"
     type: text
     target: name
-    mode: contains
+    operators: [contains]
 ```
 
 ## API summary
