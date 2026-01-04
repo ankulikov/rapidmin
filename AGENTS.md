@@ -118,6 +118,7 @@ Content-Type: application/json
 - Widgets include `id`, `title`, `type`, `provider`, and `table` display config.
 - Provider SQL supports `query`, `bindings` (e.g., `query.limit`), and optional `pagination` with `column` and `order`.
 - `table.columns` supports either a string column name or an object with `id`, optional `title`, and optional `render`.
+- `table.filters` uses `target` to specify the provider field to filter on (instead of `column`).
 - `render` supports `type: link`, `text` and `url` templates (e.g., `{{id}}`), and `external: true` for external links.
 
 ## Project structure

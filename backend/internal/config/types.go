@@ -97,7 +97,7 @@ type FilterSpec struct {
 	ID        string        `yaml:"id" json:"id"`
 	Title     string        `yaml:"title" json:"title"`
 	Type      string        `yaml:"type" json:"type"`
-	Column    string        `yaml:"column" json:"column"`
+	Target    string        `yaml:"target" json:"target"`
 	Mode      string        `yaml:"mode" json:"mode,omitempty"`
 	Operators []string      `yaml:"operators" json:"operators,omitempty"`
 	Values    []ValueOption `yaml:"values" json:"values,omitempty"`

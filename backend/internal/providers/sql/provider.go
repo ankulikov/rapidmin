@@ -151,7 +151,7 @@ func buildFilterConditions(widget config.Widget, filters []providers.Filter, lik
 	conds := make([]sq.Sqlizer, 0, len(filters))
 	for _, filter := range filters {
 		spec, ok := filterIndex[filter.Name]
-		if !ok || spec.Column == "" {
+		if !ok || spec.Target == "" {
 			continue
 		}
 
@@ -172,7 +172,7 @@ func buildFilterConditions(widget config.Widget, filters []providers.Filter, lik
 			continue
 		}
 
-		col := spec.Column
+		col := spec.Target
 		switch operator {
 		case "eq":
 			conds = append(conds, sq.Eq{col: filter.Values[0]})

@@ -65,22 +65,22 @@ pages:
             - id: film_title
               title: "Film title contains"
               type: text
-              column: film_title
+              target: film_title
               mode: contains
             - id: release_year
               title: "Release year"
               type: number
-              column: release_year
+              target: release_year
               operators: [ gt, lt ]
             - id: actor_name
               title: "Actor name contains"
               type: text
-              column: actor_for_search
+              target: actor_for_search
               mode: contains
             - id: genre
               title: "Genre"
               type: select_multi
-              column: genre_for_search
+              target: genre_for_search
               values: [
                 { value: action, label: Action },
                 { value: adventure, label: Adventure },

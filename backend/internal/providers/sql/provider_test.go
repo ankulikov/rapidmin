@@ -15,13 +15,13 @@ func TestBuildFilterConditions(t *testing.T) {
 	widget := config.Widget{
 		Table: &config.TableSpec{
 			Filters: []config.FilterSpec{
-				{ID: "age", Column: "age", Type: "number", Mode: "gt"},
-				{ID: "tags", Column: "tag", Type: "select_multi"},
-				{ID: "score", Column: "score", Type: "number", Operators: []string{"lt"}},
-				{ID: "name", Column: "name", Type: "text"},
-				{ID: "desc", Column: "description", Type: "text"},
-				{ID: "range", Column: "created_at", Type: "date"},
-				{ID: "skip", Column: ""},
+				{ID: "age", Target: "age", Type: "number", Mode: "gt"},
+				{ID: "tags", Target: "tag", Type: "select_multi"},
+				{ID: "score", Target: "score", Type: "number", Operators: []string{"lt"}},
+				{ID: "name", Target: "name", Type: "text"},
+				{ID: "desc", Target: "description", Type: "text"},
+				{ID: "range", Target: "created_at", Type: "date"},
+				{ID: "skip", Target: ""},
 			},
 		},
 	}
@@ -66,7 +66,7 @@ func TestBuildFilterConditionsBetweenMissingValue(t *testing.T) {
 	widget := config.Widget{
 		Table: &config.TableSpec{
 			Filters: []config.FilterSpec{
-				{ID: "range", Column: "created_at", Type: "date"},
+				{ID: "range", Target: "created_at", Type: "date"},
 			},
 		},
 	}
@@ -94,7 +94,7 @@ func TestBuildQuery(t *testing.T) {
 		},
 		Table: &config.TableSpec{
 			Filters: []config.FilterSpec{
-				{ID: "name", Column: "name", Type: "text", Mode: "contains"},
+				{ID: "name", Target: "name", Type: "text", Mode: "contains"},
 			},
 		},
 	}

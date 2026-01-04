@@ -67,6 +67,16 @@ providers:
 
 Templates replace `{{column}}` with row values.
 
+Filters use `target` to point at the provider field:
+```yaml
+filters:
+  - id: name
+    title: "Name contains"
+    type: text
+    target: name
+    mode: contains
+```
+
 ## API summary
 - `GET /api/config` returns config JSON (without provider details).
 - `GET /api/widgets/:id` returns widget data.

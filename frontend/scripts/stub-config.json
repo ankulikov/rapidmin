@@ -37,28 +37,28 @@
                 "id": "name",
                 "title": "Name contains",
                 "type": "text",
-                "column": "name",
+              "target": "name",
                 "mode": "contains"
               },
               {
                 "id": "age",
                 "title": "Age",
                 "type": "number",
-                "column": "age",
+              "target": "age",
                 "operators": ["gt", "lt"]
               },
               {
                 "id": "created",
                 "title": "Created between",
                 "type": "date",
-                "column": "created_at",
+              "target": "created_at",
                 "operators": ["between", "before", "after"]
               },
               {
                 "id": "role",
                 "title": "Role",
                 "type": "select_one",
-                "column": "role",
+              "target": "role",
                 "values": [
                   { "value": "admin", "label": "Admin" },
                   { "value": "user", "label": "User" },
@@ -69,7 +69,7 @@
                 "id": "tags",
                 "title": "Tags",
                 "type": "select_multi",
-                "column": "tag",
+              "target": "tag",
                 "values": [
                   { "value": "vip", "label": "VIP" },
                   { "value": "active", "label": "Active" },
@@ -100,7 +100,7 @@
                 "id": "status",
                 "title": "Status",
                 "type": "select_one",
-                "column": "status",
+              "target": "status",
                 "values": [
                   { "value": "ok", "label": "OK" },
                   { "value": "delayed", "label": "Delayed" }
@@ -110,7 +110,7 @@
                 "id": "owner",
                 "title": "Owner",
                 "type": "select_one",
-                "column": "owner",
+              "target": "owner",
                 "values": [
                   { "value": "Ops", "label": "Ops" },
                   { "value": "Finance", "label": "Finance" }

@@ -48,22 +48,22 @@ pages:
             - id: name
               title: "Name contains"
               type: text
-              column: name
+              target: name
               mode: contains
             - id: age
               title: "Age"
               type: number
-              column: age
+              target: age
               operators: [gt, lt]
             - id: created
               title: "Created"
               type: date
-              column: created_at
+              target: created_at
               operators: [between, before, after]
             - id: tags
               title: "Tags"
               type: select_multi
-              column: tag
+              target: tag
               values:
                 - { value: "vip", label: "VIP" }
                 - { value: "active", label: "Active" }

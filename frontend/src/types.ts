@@ -46,7 +46,7 @@ export type FilterSpec = {
   id: string;
   title: string;
   type: string;
-  column: string;
+  target: string;
   mode?: string;
   operators?: string[];
   values?: ValueOption[];
