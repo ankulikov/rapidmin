@@ -1,7 +1,10 @@
 title: "Rapidmin Demo"
 
 providers:
-  - db
+  db:
+    sql:
+      driver: sqlite3
+      dsn: data.db
 
 menu:
   - title: "Users"

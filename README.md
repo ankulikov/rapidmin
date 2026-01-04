@@ -50,6 +50,16 @@ table:
         url: "/users/{{id}}"
 ```
 
+Database provider config lives at `providers.db`:
+```yaml
+providers:
+  db:
+    sql:
+      driver: sqlite3
+      dsn: data.db
+```
+`driver`/`dsn` can use `{{env.VAR_NAME}}` to resolve values from environment variables at load time.
+
 `render.type: link` supports:
 - `text`: template for label.
 - `url`: template for href.

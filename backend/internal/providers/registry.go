@@ -25,7 +25,11 @@ type DataResponse struct {
 	HasMore    bool             `json:"has_more,omitempty"`
 }
 
+type Loader[T any] interface {
+}
+
 type Provider interface {
+	Init(ctx context.Context, name string, providerConfig config.ProviderConfig) error
 	Fetch(ctx context.Context, widget config.Widget, req DataRequest) (DataResponse, error)
 }
 

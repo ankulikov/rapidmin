@@ -3,10 +3,19 @@ package config
 import "gopkg.in/yaml.v3"
 
 type AppConfig struct {
-	Title     string     `yaml:"title" json:"title"`
-	Providers []string   `yaml:"providers" json:"providers"`
-	Menu      []MenuItem `yaml:"menu" json:"menu"`
-	Pages     []Page     `yaml:"pages" json:"pages"`
+	Title     string                    `yaml:"title" json:"title"`
+	Providers map[string]ProviderConfig `yaml:"providers" json:"-"`
+	Menu      []MenuItem                `yaml:"menu" json:"menu"`
+	Pages     []Page                    `yaml:"pages" json:"pages"`
+}
+
+type ProviderConfig struct {
+	SQL *SQLProviderConfig `yaml:"sql" json:"-"`
+}
+
+type SQLProviderConfig struct {
+	Driver string `yaml:"driver" json:"-"`
+	DSN    string `yaml:"dsn" json:"-"`
 }
 
 type MenuItem struct {

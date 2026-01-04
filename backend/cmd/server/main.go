@@ -5,14 +5,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/jmoiron/sqlx"
+	"github.com/ankulikov/rapidmin/internal/config"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 
-	"github.com/ankulikov/rapidmin/internal/config"
-	"github.com/ankulikov/rapidmin/internal/providers"
-	sqlprovider "github.com/ankulikov/rapidmin/internal/providers/sql"
-	"github.com/ankulikov/rapidmin/internal/server"
+	"github.com/ankulikov/rapidmin/app"
 )
 
 func main() {
@@ -22,37 +19,18 @@ func main() {
 
 	cfg, err := config.Load(*configPath)
 	if err != nil {
-		log.Fatalf("load config: %v", err)
+		log.Fatalf("load config error: %v", err)
 	}
 
-	providerRegistry := providers.Registry{
-		"db": sqlprovider.New(openDB()),
-	}
-
-	app, err := server.New(cfg, providerRegistry)
+	srv, err := app.NewServer(cfg)
 	if err != nil {
-		log.Fatalf("init server: %v", err)
+		log.Fatalf("init server error: %v", err)
 	}
+
+	handler := srv.Handler()
 
 	log.Printf("listening on %s", *addr)
-	if err := http.ListenAndServe(*addr, app.Handler()); err != nil {
+	if err := http.ListenAndServe(*addr, handler); err != nil {
 		log.Fatalf("server error: %v", err)
 	}
-}
-
-func openDB() *sqlx.DB {
-	//driver := strings.TrimSpace(os.Getenv("DB_DRIVER"))
-	//dsn := strings.TrimSpace(os.Getenv("DB_DSN"))
-	//if driver == "" || dsn == "" {
-	//	return nil
-	//}
-
-	db, err := sqlx.Open("sqlite3",
-		"file:/Users/ankulikov/GolandProjects/rapidmin/backend/data.db?_fk=1")
-	if err != nil {
-		log.Printf("db open failed: %v", err)
-		return nil
-	}
-
-	return db
 }

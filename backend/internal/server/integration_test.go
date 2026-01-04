@@ -26,7 +26,7 @@ type dataResponse struct {
 func TestServerConfigAndWidgetData(t *testing.T) {
 	db := setupSQLiteDB(t)
 	providerRegistry := providers.Registry{
-		"db": sqlprovider.New(db),
+		"db": sqlprovider.NewWithDB(db),
 	}
 
 	cfg := sampleConfig()
@@ -164,8 +164,12 @@ func setupSQLiteDB(t *testing.T) *sqlx.DB {
 
 func sampleConfig() config.AppConfig {
 	return config.AppConfig{
-		Title:     "Test",
-		Providers: []string{"db"},
+		Title: "Test",
+		Providers: map[string]config.ProviderConfig{
+			"db": {
+				SQL: &config.SQLProviderConfig{Driver: "sqlite3", DSN: ":memory:"},
+			},
+		},
 		Pages: []config.Page{
 			{
 				Slug:  "users",

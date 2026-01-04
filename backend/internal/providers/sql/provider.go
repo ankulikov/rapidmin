@@ -17,8 +17,35 @@ type Provider struct {
 	db *sqlx.DB
 }
 
-func New(db *sqlx.DB) *Provider {
+func New() *Provider {
+	return &Provider{}
+}
+
+func NewWithDB(db *sqlx.DB) *Provider {
 	return &Provider{db: db}
+}
+
+func (p *Provider) Init(ctx context.Context, name string, providerConfig config.ProviderConfig) (err error) {
+	if p.db != nil {
+		return nil
+	}
+
+	if providerConfig.SQL == nil {
+		return fmt.Errorf("sql provider %s missing config", name)
+	}
+
+	driver := strings.TrimSpace(providerConfig.SQL.Driver)
+	dsn := strings.TrimSpace(providerConfig.SQL.DSN)
+	if driver == "" {
+		return fmt.Errorf("sql provider %s missing driver", name)
+	}
+	if dsn == "" {
+		return fmt.Errorf("sql provider %s missing dsn", name)
+	}
+
+	p.db, err = sqlx.Open(driver, dsn)
+
+	return err
 }
 
 func (p *Provider) Fetch(ctx context.Context, widget config.Widget, req providers.DataRequest) (providers.DataResponse, error) {

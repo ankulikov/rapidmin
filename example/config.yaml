@@ -1,0 +1,105 @@
+title: "Rapidmin Example"
+
+providers:
+  db:
+    sql:
+      driver: sqlite3
+      dsn: rapidmin.db
+
+menu:
+  - title: "Films"
+    page: films
+
+pages:
+  - slug: films
+    title: "Films"
+    widgets:
+      - id: films_table
+        title: "Films"
+        type: table
+        provider:
+          name: db
+          sql:
+            query: >
+              SELECT films.id              AS film_id,
+                films.imdb_id                 AS imdb_id,
+                films.title                   AS film_title,
+                films.release_year            AS release_year,
+                json_group_array(distinct a.name) as actors,
+                json_group_array(distinct g.name) as genres,
+                g.name as genre_for_search,
+                a.name as actor_for_search
+              FROM films
+                       LEFT JOIN films_actors ON films_actors.film_id = films.id
+                       LEFT JOIN actors a ON films_actors.actor_id = a.id
+                       LEFT JOIN films_genres fg on films.id = fg.film_id
+                       LEFT JOIN genres g on fg.genre_id = g.id
+              group by films.id
+            pagination:
+              column: film_id
+              order: asc
+        table:
+          columns:
+            - id: film_id
+              title: "ID"
+            - id: imdb_db
+              title: IMDB
+              render:
+                type: link
+                text: Go to IMDB ↩︎
+                url: "https://www.imdb.com/title/{{imdb_id}}"
+                external: true
+            - id: film_title
+              title: "Title"
+              render:
+                type: link
+                text: "{{film_title}}"
+                url: "/films/{{film_id}}"
+            - id: genres
+              title: "Genres"
+            - id: release_year
+              title: "Release Year"
+            - id: actors
+              title: Actors
+          filters:
+            - id: film_title
+              title: "Film title contains"
+              type: text
+              column: film_title
+              mode: contains
+            - id: release_year
+              title: "Release year"
+              type: number
+              column: release_year
+              operators: [ gt, lt ]
+            - id: actor_name
+              title: "Actor name contains"
+              type: text
+              column: actor_for_search
+              mode: contains
+            - id: genre
+              title: "Genre"
+              type: select_multi
+              column: genre_for_search
+              values: [
+                { value: action, label: Action },
+                { value: adventure, label: Adventure },
+                { value: animation, label: Animation },
+                { value: comedy, label: Comedy },
+                { value: crime, label: Crime },
+                { value: documentary, label: Documentary },
+                { value: drama, label: Drama },
+                { value: family, label: Family },
+                { value: fantasy, label: Fantasy },
+                { value: foreign, label: Foreign },
+                { value: history, label: History },
+                { value: horror, label: Horror },
+                { value: music, label: Music },
+                { value: mystery, label: Mystery },
+                { value: romance, label: Romance },
+                { value: "science fiction", label: "Science Fiction" },
+                { value: thriller, label: Thriller },
+                { value: "tv movie", label: "TV Movie" },
+                { value: war, label: War },
+                { value: western, label: Western }
+              ]

@@ -4,11 +4,13 @@
 
 frontend/node_modules/
 frontend/dist/
+frontend/.vite/
 frontend/.env
 
 backend/tmp/
 backend/*.db
 backend/*.db-shm
 backend/*.db-wal
+example/rapidmin.db
 
 *.log
