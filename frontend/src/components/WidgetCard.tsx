@@ -41,20 +41,21 @@ export const WidgetCard: React.FC<Props> = ({ widget, location }) => {
     return params;
   }, [location.search, widget.table?.filters]);
 
-  const [filtersDraft, setFiltersDraft] = useState<FilterState>({});
-  const [filtersApplied, setFiltersApplied] = useState<FilterState>({});
+  const filtersFromUrl = useMemo(
+    () => parseFilterParams(widget.table?.filters ?? [], location.search),
+    [widget.id, widget.table?.filters, location.search],
+  );
+  const [filtersDraft, setFiltersDraft] = useState<FilterState>(filtersFromUrl);
 
   useEffect(() => {
-    const parsed = parseFilterParams(widget.table?.filters ?? [], location.search);
-    setFiltersDraft(parsed);
-    setFiltersApplied(parsed);
-  }, [widget.id, widget.table?.filters, location.search]);
+    setFiltersDraft(filtersFromUrl);
+  }, [filtersFromUrl]);
 
   const params = useMemo(() => {
     const combined = new URLSearchParams(baseParams);
-    appendFilters(combined, filtersApplied, widget.table?.filters ?? []);
+    appendFilters(combined, filtersFromUrl, widget.table?.filters ?? []);
     return combined;
-  }, [baseParams, filtersApplied, widget.table?.filters]);
+  }, [baseParams, filtersFromUrl, widget.table?.filters]);
 
   useEffect(() => {
     let active = true;
@@ -117,7 +118,6 @@ export const WidgetCard: React.FC<Props> = ({ widget, location }) => {
   const handleResetFilters = () => {
     const cleared = emptyFilterState(widget.table?.filters ?? []);
     setFiltersDraft(cleared);
-    setFiltersApplied(cleared);
     applyFiltersToUrl(cleared);
   };
 
@@ -147,7 +147,6 @@ export const WidgetCard: React.FC<Props> = ({ widget, location }) => {
           filtersDraft={filtersDraft}
           onFilterChange={setFiltersDraft}
           onApplyFilters={() => {
-            setFiltersApplied(filtersDraft);
             applyFiltersToUrl(filtersDraft);
           }}
           onResetFilters={handleResetFilters}
