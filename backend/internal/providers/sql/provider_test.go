@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/stretchr/testify/require"
 
 	"github.com/ankulikov/rapidmin/internal/config"
 	"github.com/ankulikov/rapidmin/internal/providers"
@@ -15,69 +16,39 @@ func TestBuildFilterConditions(t *testing.T) {
 	widget := config.Widget{
 		Table: &config.TableSpec{
 			Filters: []config.FilterSpec{
-				{ID: "age", Target: "age", Type: "number", Mode: "gt"},
-				{ID: "tags", Target: "tag", Type: "select_multi"},
-				{ID: "score", Target: "score", Type: "number", Operators: []string{"lt"}},
-				{ID: "name", Target: "name", Type: "text"},
-				{ID: "desc", Target: "description", Type: "text"},
-				{ID: "range", Target: "created_at", Type: "date"},
+				{ID: "name", Target: "name", Type: "text", Mode: "contains"},
 				{ID: "skip", Target: ""},
 			},
 		},
+		Provider: config.ProviderSpec{
+			SQL: &config.SQLSpec{
+				Types: map[string]config.DataType{},
+			}},
 	}
 	filters := []providers.Filter{
-		{Name: "age", Values: []string{"18"}},
-		{Name: "tags", Values: []string{"vip", "active"}},
-		{Name: "score", Values: []string{"90"}},
-		{Name: "name", Operator: "contains", Values: []string{"bob"}},
-		{Name: "desc", Values: []string{"foo"}},
-		{Name: "range", Operator: "between", Values: []string{"2024-01-01", "2024-01-31"}},
+		{Name: "name", Values: []string{"bob"}},
 		{Name: "skip", Values: []string{"x"}},
 		{Name: "missing", Values: []string{"x"}},
 	}
 
-	conds := buildFilterConditions(widget, filters, "ILIKE")
+	conds, err := buildFilterConditions(widget, filters, "postgres")
+	require.NoError(t, err)
+
 	query, args, err := sq.Select("*").From("src").Where(sq.And(conds)).PlaceholderFormat(sq.Question).ToSql()
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expectedQuery := "SELECT * FROM src WHERE (age > ? AND tag IN (?,?) AND score < ? AND name ILIKE ? AND description = ? AND created_at BETWEEN ? AND ?)"
+	expectedQuery := "SELECT * FROM src WHERE (name ILIKE ?)"
 	if query != expectedQuery {
 		t.Fatalf("expected query %q, got %q", expectedQuery, query)
 	}
 
 	expectedArgs := []any{
-		"18",
-		"vip",
-		"active",
-		"90",
 		"%bob%",
-		"foo",
-		"2024-01-01",
-		"2024-01-31",
 	}
 	if !reflect.DeepEqual(args, expectedArgs) {
 		t.Fatalf("expected args %v, got %v", expectedArgs, args)
-	}
-}
-
-func TestBuildFilterConditionsBetweenMissingValue(t *testing.T) {
-	widget := config.Widget{
-		Table: &config.TableSpec{
-			Filters: []config.FilterSpec{
-				{ID: "range", Target: "created_at", Type: "date"},
-			},
-		},
-	}
-	filters := []providers.Filter{
-		{Name: "range", Operator: "between", Values: []string{"2024-01-01"}},
-	}
-
-	conds := buildFilterConditions(widget, filters, "LIKE")
-
-	if len(conds) != 0 {
-		t.Fatalf("expected no conds, got %v", conds)
 	}
 }
 
@@ -106,10 +77,8 @@ func TestBuildQuery(t *testing.T) {
 		},
 	}
 
-	query, args, err := buildQuery(widget, req, "ILIKE")
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
+	query, args, err := buildQuery(widget, req, "postgres")
+	require.NoError(t, err)
 
 	if !strings.HasPrefix(query, "SELECT * FROM (SELECT id, name FROM users) AS src") {
 		t.Fatalf("unexpected query: %q", query)

@@ -2,6 +2,25 @@ package config
 
 import "gopkg.in/yaml.v3"
 
+const (
+	EqOperator       FilterOperator = "eq"
+	GtOperator       FilterOperator = "gt"
+	LtOperator       FilterOperator = "lt"
+	BeforeOperator   FilterOperator = "before"
+	AfterOperator    FilterOperator = "after"
+	ContainsOperator FilterOperator = "contains"
+	BetweenOperator  FilterOperator = "between"
+	InOperator       FilterOperator = "in"
+)
+
+const (
+	JsonArray DataType = "json_array"
+)
+
+type FilterOperator string
+
+type DataType string
+
 type AppConfig struct {
 	Title     string                    `yaml:"title" json:"title"`
 	Providers map[string]ProviderConfig `yaml:"providers" json:"-"`
@@ -45,9 +64,10 @@ type ProviderSpec struct {
 }
 
 type SQLSpec struct {
-	Query      string            `yaml:"query" json:"query"`
-	Bindings   map[string]string `yaml:"bindings" json:"bindings"`
-	Pagination *PaginationSpec   `yaml:"pagination" json:"pagination,omitempty"`
+	Query      string              `yaml:"query" json:"query"`
+	Bindings   map[string]string   `yaml:"bindings" json:"bindings"`
+	Types      map[string]DataType `yaml:"types" json:"types,omitempty"`
+	Pagination *PaginationSpec     `yaml:"pagination" json:"pagination,omitempty"`
 }
 
 type PaginationSpec struct {
@@ -94,13 +114,13 @@ func (c *ColumnSpec) UnmarshalYAML(n *yaml.Node) error {
 }
 
 type FilterSpec struct {
-	ID        string        `yaml:"id" json:"id"`
-	Title     string        `yaml:"title" json:"title"`
-	Type      string        `yaml:"type" json:"type"`
-	Target    string        `yaml:"target" json:"target"`
-	Mode      string        `yaml:"mode" json:"mode,omitempty"`
-	Operators []string      `yaml:"operators" json:"operators,omitempty"`
-	Values    []ValueOption `yaml:"values" json:"values,omitempty"`
+	ID        string           `yaml:"id" json:"id"`
+	Title     string           `yaml:"title" json:"title"`
+	Type      string           `yaml:"type" json:"type"`
+	Target    string           `yaml:"target" json:"target"`
+	Mode      string           `yaml:"mode" json:"mode,omitempty"`
+	Operators []FilterOperator `yaml:"operators" json:"operators,omitempty"`
+	Values    []ValueOption    `yaml:"values" json:"values,omitempty"`
 }
 
 type ValueOption struct {

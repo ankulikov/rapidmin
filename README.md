@@ -67,6 +67,16 @@ providers:
 
 Templates replace `{{column}}` with row values.
 
+SQL providers can declare type hints for filter targets:
+```yaml
+provider:
+  name: db
+  sql:
+    types:
+      created_at: date
+      age: int
+```
+
 Filters use `target` to point at the provider field:
 ```yaml
 filters:

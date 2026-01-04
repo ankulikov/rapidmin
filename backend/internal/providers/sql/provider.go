@@ -56,7 +56,9 @@ func (p *Provider) Fetch(ctx context.Context, widget config.Widget, req provider
 		return providers.DataResponse{}, errors.New("sql provider missing query")
 	}
 
-	query, args, err := buildQuery(widget, req, likeOperator(p.db.DriverName()))
+	driverName := p.db.DriverName()
+	query, args, err := buildQuery(widget, req, driverName)
+	fmt.Println(query, args)
 	if err != nil {
 		return providers.DataResponse{}, err
 	}
@@ -103,12 +105,16 @@ func (p *Provider) Fetch(ctx context.Context, widget config.Widget, req provider
 	}, nil
 }
 
-func buildQuery(widget config.Widget, req providers.DataRequest, likeOp string) (string, []any, error) {
+func buildQuery(widget config.Widget, req providers.DataRequest, driverName string) (string, []any, error) {
 	trimmed := strings.TrimSuffix(strings.TrimSpace(widget.Provider.SQL.Query), ";")
 	base, baseOrderBy := splitByOrderBy(trimmed)
 	builder := sq.Select("*").From("(" + base + ") AS src")
 
-	conds := buildFilterConditions(widget, req.Filters, likeOp)
+	conds, err := buildFilterConditions(widget, req.Filters, driverName)
+	if err != nil {
+		return "", nil, err
+	}
+
 	for _, cond := range conds {
 		builder = builder.Where(cond)
 	}
@@ -138,9 +144,9 @@ func buildQuery(widget config.Widget, req providers.DataRequest, likeOp string) 
 	return query, args, nil
 }
 
-func buildFilterConditions(widget config.Widget, filters []providers.Filter, likeOp string) []sq.Sqlizer {
+func buildFilterConditions(widget config.Widget, filters []providers.Filter, driverName string) ([]sq.Sqlizer, error) {
 	if widget.Table == nil {
-		return nil
+		return nil, nil
 	}
 
 	filterIndex := map[string]config.FilterSpec{}
@@ -155,58 +161,25 @@ func buildFilterConditions(widget config.Widget, filters []providers.Filter, lik
 			continue
 		}
 
-		operator := filter.Operator
-		if operator == "" {
-			if spec.Mode != "" {
-				operator = spec.Mode
-			} else if spec.Type == "select_multi" {
-				operator = "in"
-			} else if len(spec.Operators) == 1 {
-				operator = spec.Operators[0]
-			} else {
-				operator = "eq"
-			}
-		}
-
 		if len(filter.Values) == 0 {
 			continue
 		}
 
-		col := spec.Target
-		switch operator {
-		case "eq":
-			conds = append(conds, sq.Eq{col: filter.Values[0]})
-		case "gt":
-			conds = append(conds, sq.Gt{col: filter.Values[0]})
-		case "lt":
-			conds = append(conds, sq.Lt{col: filter.Values[0]})
-		case "before":
-			conds = append(conds, sq.Lt{col: filter.Values[0]})
-		case "after":
-			conds = append(conds, sq.Gt{col: filter.Values[0]})
-		case "contains":
-			conds = append(conds, sq.Expr(fmt.Sprintf("%s %s ?", col, likeOp), "%"+filter.Values[0]+"%"))
-		case "between":
-			if len(filter.Values) < 2 {
-				continue
-			}
-			conds = append(conds, sq.Expr(fmt.Sprintf("%s BETWEEN ? AND ?", col), filter.Values[0], filter.Values[1]))
-		case "in":
-			if len(filter.Values) == 0 {
-				continue
-			}
-			conds = append(conds, sq.Eq{col: filter.Values})
+		var targetType *config.DataType
+		if _targetType, ok := widget.Provider.SQL.Types[spec.Target]; ok {
+			targetType = &_targetType
 		}
+
+		cond, err := makeFilterCond(spec, filter, driverName, targetType)
+		if err != nil {
+			return nil, err
+		}
+
+		conds = append(conds, cond)
+
 	}
 
-	return conds
-}
-
-func likeOperator(driver string) string {
-	if driver == "postgres" {
-		return "ILIKE"
-	}
-	return "LIKE"
+	return conds, nil
 }
 
 func buildPagination(pagination *config.PaginationSpec, cursor string) (sq.Sqlizer, string) {

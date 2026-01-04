@@ -14,7 +14,7 @@ type DataRequest struct {
 
 type Filter struct {
 	Name     string
-	Operator string
+	Operator config.FilterOperator
 	Values   []string
 }
 

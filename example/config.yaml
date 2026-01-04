@@ -21,20 +21,22 @@ pages:
           name: db
           sql:
             query: >
-              SELECT films.id              AS film_id,
-                films.imdb_id                 AS imdb_id,
-                films.title                   AS film_title,
-                films.release_year            AS release_year,
-                json_group_array(distinct a.name) as actors,
+              SELECT 
+                films.id                          AS film_id,
+                films.imdb_id                     AS imdb_id,
+                films.title                       AS film_title,
+                films.release_year                AS release_year,
                 json_group_array(distinct g.name) as genres,
-                g.name as genre_for_search,
-                a.name as actor_for_search
+                json_group_array(distinct a.name) as actors
               FROM films
-                       LEFT JOIN films_actors ON films_actors.film_id = films.id
-                       LEFT JOIN actors a ON films_actors.actor_id = a.id
-                       LEFT JOIN films_genres fg on films.id = fg.film_id
-                       LEFT JOIN genres g on fg.genre_id = g.id
+                JOIN films_actors ON films_actors.film_id = films.id
+                JOIN actors a ON films_actors.actor_id = a.id
+                JOIN films_genres fg on films.id = fg.film_id
+                JOIN genres g on fg.genre_id = g.id
               group by films.id
+            types:
+              genres: json_array
+              actors: json_array
             pagination:
               column: film_id
               order: asc
@@ -75,12 +77,12 @@ pages:
             - id: actor_name
               title: "Actor name contains"
               type: text
-              target: actor_for_search
+              target: actors
               mode: contains
             - id: genre
               title: "Genre"
               type: select_multi
-              target: genre_for_search
+              target: genres
               values: [
                 { value: action, label: Action },
                 { value: adventure, label: Adventure },

@@ -105,7 +105,7 @@ func parseFilters(values url.Values) []providers.Filter {
 		mapKey := name + "|" + operator
 		filter, ok := filtersByKey[mapKey]
 		if !ok {
-			filter = &providers.Filter{Name: name, Operator: operator}
+			filter = &providers.Filter{Name: name, Operator: config.FilterOperator(operator)}
 			filtersByKey[mapKey] = filter
 			order = append(order, mapKey)
 		}
