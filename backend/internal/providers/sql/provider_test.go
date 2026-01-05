@@ -134,3 +134,31 @@ func TestBuildPagination(t *testing.T) {
 		t.Fatalf("expected asc orderBy, got %q", orderBy)
 	}
 }
+
+func TestNormalizeRowJSONType(t *testing.T) {
+	row := map[string]any{
+		"tags":  []byte(`["vip","active"]`),
+		"attrs": `{"tier":2}`,
+		"name":  []byte(`Ann`),
+	}
+	types := map[string]config.DataType{
+		"tags":  config.JsonArray,
+		"attrs": config.JsonArray,
+	}
+
+	normalizeRow(row, types)
+
+	tags, ok := row["tags"].([]any)
+	if !ok || len(tags) != 2 || tags[0] != "vip" {
+		t.Fatalf("expected parsed tags array, got %T: %v", row["tags"], row["tags"])
+	}
+
+	attrs, ok := row["attrs"].(map[string]any)
+	if !ok || attrs["tier"] != float64(2) {
+		t.Fatalf("expected parsed attrs object, got %T: %v", row["attrs"], row["attrs"])
+	}
+
+	if row["name"] != "Ann" {
+		t.Fatalf("expected name to be string, got %T: %v", row["name"], row["name"])
+	}
+}

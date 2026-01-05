@@ -2,6 +2,7 @@ package sql
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -77,7 +78,7 @@ func (p *Provider) Fetch(ctx context.Context, widget config.Widget, req provider
 		if err := rows.MapScan(row); err != nil {
 			return providers.DataResponse{}, err
 		}
-		normalizeRow(row)
+		normalizeRow(row, widget.Provider.SQL.Types)
 		data = append(data, row)
 	}
 
@@ -246,10 +247,27 @@ func splitByOrderBy(query string) (string, string) {
 	return strings.TrimSpace(query[:orderIdx-1]), strings.TrimSpace(query[orderIdx:])
 }
 
-func normalizeRow(row map[string]any) {
+func normalizeRow(row map[string]any, types map[string]config.DataType) {
 	for key, value := range row {
+		targetType, hasType := types[key]
 		if bytes, ok := value.([]byte); ok {
-			row[key] = string(bytes)
+			value = string(bytes)
+			row[key] = value
+		}
+		if !hasType || targetType != config.JsonArray {
+			continue
+		}
+		text, ok := value.(string)
+		if !ok || text == "" {
+			continue
+		}
+		var parsed any
+		if err := json.Unmarshal([]byte(text), &parsed); err != nil {
+			continue
+		}
+		switch parsed.(type) {
+		case []any, map[string]any:
+			row[key] = parsed
 		}
 	}
 }

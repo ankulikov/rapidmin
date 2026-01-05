@@ -79,7 +79,7 @@ function renderCell(column: ColumnSpec, row: Record<string, unknown>) {
   const fallbackText = rawValue === null || rawValue === undefined ? "" : String(rawValue);
   const render = column.render;
   if (!render || render.type !== "link") {
-    return fallbackText;
+    return formatValue(rawValue);
   }
   const url = render.url ? applyTemplate(render.url, row) : "";
   const text = render.text ? applyTemplate(render.text, row) : fallbackText;
@@ -102,4 +102,30 @@ function applyTemplate(template: string, row: Record<string, unknown>) {
     if (value === null || value === undefined) return "";
     return String(value);
   });
+}
+
+function formatValue(value: unknown): React.ReactNode {
+  if (Array.isArray(value)) {
+    if (value.length === 0) return "";
+    return (
+      <div className="cell-list">
+        {value.map((item, index) => (
+          <div key={index} className="cell-list-item">
+            {formatPrimitive(item)}
+          </div>
+        ))}
+      </div>
+    );
+  }
+  if (value && typeof value === "object") {
+    return JSON.stringify(value);
+  }
+  if (value === null || value === undefined) return "";
+  return String(value);
+}
+
+function formatPrimitive(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  if (typeof value === "object") return JSON.stringify(value);
+  return String(value);
 }
