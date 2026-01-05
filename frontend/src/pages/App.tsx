@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link, NavLink, Route, Routes, useLocation } from "react-router-dom";
 
 import { fetchConfig } from "../api";
+import { setPathPrefix } from "../pathPrefix";
 import type { AppConfig, MenuItem, Page } from "../types";
 import { PageView } from "./PageView";
 
@@ -24,6 +25,7 @@ export const App: React.FC = () => {
       .then((cfg) => {
         if (!active) return;
         setConfig(cfg);
+        setPathPrefix(cfg.path_prefix);
         setError(null);
       })
       .catch((err) => {

@@ -1,5 +1,6 @@
 export type AppConfig = {
   title: string;
+  path_prefix?: string;
   menu: MenuItem[];
   pages: Page[];
 };

@@ -22,10 +22,11 @@ type FilterOperator string
 type DataType string
 
 type AppConfig struct {
-	Title     string                    `yaml:"title" json:"title"`
-	Providers map[string]ProviderConfig `yaml:"providers" json:"-"`
-	Menu      []MenuItem                `yaml:"menu" json:"menu"`
-	Pages     []Page                    `yaml:"pages" json:"pages"`
+	Title      string                    `yaml:"title" json:"title"`
+	PathPrefix string                    `yaml:"path_prefix" json:"path_prefix,omitempty"`
+	Providers  map[string]ProviderConfig `yaml:"providers" json:"-"`
+	Menu       []MenuItem                `yaml:"menu" json:"menu"`
+	Pages      []Page                    `yaml:"pages" json:"pages"`
 }
 
 type ProviderConfig struct {

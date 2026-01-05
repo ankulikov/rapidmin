@@ -1,1 +1,1 @@
-{"root":["./src/api.ts","./src/main.tsx","./src/types.ts","./src/components/filterpanel.tsx","./src/components/tablewidget.tsx","./src/components/widgetcard.tsx","./src/pages/app.tsx","./src/pages/pageview.tsx"],"version":"5.9.3"}
+{"root":["./src/api.ts","./src/main.tsx","./src/pathprefix.ts","./src/types.ts","./src/components/filterpanel.tsx","./src/components/tablewidget.tsx","./src/components/widgetcard.tsx","./src/pages/app.tsx","./src/pages/pageview.tsx"],"version":"5.9.3"}

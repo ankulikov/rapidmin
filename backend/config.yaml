@@ -1,4 +1,5 @@
 title: "Rapidmin Demo"
+path_prefix: ""
 
 providers:
   db:

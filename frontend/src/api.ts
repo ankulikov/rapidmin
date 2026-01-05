@@ -1,7 +1,8 @@
 import type { AppConfig, DataResponse } from "./types";
+import { withPathPrefix } from "./pathPrefix";
 
 export async function fetchConfig(): Promise<AppConfig> {
-  const res = await fetch("/api/config");
+  const res = await fetch(withPathPrefix("/api/config"));
   if (!res.ok) {
     throw new Error(`Config request failed: ${res.status}`);
   }
@@ -13,7 +14,9 @@ export async function fetchWidgetData(
   params: URLSearchParams,
 ): Promise<DataResponse> {
   const query = params.toString();
-  const url = query ? `/api/widgets/${widgetId}?${query}` : `/api/widgets/${widgetId}`;
+  const url = withPathPrefix(
+    query ? `/api/widgets/${widgetId}?${query}` : `/api/widgets/${widgetId}`,
+  );
   const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`Widget request failed: ${res.status}`);

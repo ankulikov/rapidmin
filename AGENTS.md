@@ -110,7 +110,7 @@ Content-Type: application/json
 - Release build should inline all JS/CSS into a single minified HTML file used by the backend shell.
 
 ## Config Notes (YAML)
-- Top-level: `title`, `providers`, `menu[]`, `pages[]`.
+- Top-level: `title`, `path_prefix`, `providers`, `menu[]`, `pages[]`.
 - `providers` is a map keyed by provider name; each value includes a typed block (`sql`) with `driver`/`dsn`.
 - Provider config values can use `{{env.VAR_NAME}}` to read from environment variables during config load.
 - Menu items may link by `page` (slug) or `href` (external link).

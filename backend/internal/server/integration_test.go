@@ -50,14 +50,14 @@ func TestServerConfigAndWidgetData(t *testing.T) {
 	query := url.Values{}
 	query.Set("limit", "2")
 	query.Add("name.contains", "ann")
-	dataResp := fetchWidgetData(t, srv.URL, query)
+	dataResp := fetchWidgetData(t, srv.URL, "", query)
 	if dataResp.Total != 2 {
 		t.Fatalf("expected 2 rows, got %d", dataResp.Total)
 	}
 
 	query = url.Values{}
 	query.Add("age.gt", "40")
-	dataResp = fetchWidgetData(t, srv.URL, query)
+	dataResp = fetchWidgetData(t, srv.URL, "", query)
 	if dataResp.Total != 1 {
 		t.Fatalf("expected 1 row, got %d", dataResp.Total)
 	}
@@ -65,7 +65,7 @@ func TestServerConfigAndWidgetData(t *testing.T) {
 	query = url.Values{}
 	query.Add("tags", "vip")
 	query.Add("tags", "active")
-	dataResp = fetchWidgetData(t, srv.URL, query)
+	dataResp = fetchWidgetData(t, srv.URL, "", query)
 	if dataResp.Total != 3 {
 		t.Fatalf("expected 3 rows, got %d", dataResp.Total)
 	}
@@ -73,14 +73,14 @@ func TestServerConfigAndWidgetData(t *testing.T) {
 	query = url.Values{}
 	query.Add("created.between", "2024-01-01")
 	query.Add("created.between", "2024-01-31")
-	dataResp = fetchWidgetData(t, srv.URL, query)
+	dataResp = fetchWidgetData(t, srv.URL, "", query)
 	if dataResp.Total != 1 {
 		t.Fatalf("expected 1 row, got %d", dataResp.Total)
 	}
 
 	query = url.Values{}
 	query.Set("limit", "1")
-	dataResp = fetchWidgetData(t, srv.URL, query)
+	dataResp = fetchWidgetData(t, srv.URL, "", query)
 	if dataResp.Total != 1 || extractID(dataResp.Data[0]) != 1 {
 		t.Fatalf("expected first row id=1")
 	}
@@ -94,7 +94,7 @@ func TestServerConfigAndWidgetData(t *testing.T) {
 	query = url.Values{}
 	query.Set("limit", "1")
 	query.Set("offset", "1")
-	dataResp = fetchWidgetData(t, srv.URL, query)
+	dataResp = fetchWidgetData(t, srv.URL, "", query)
 	if dataResp.Total != 1 || extractID(dataResp.Data[0]) != 2 {
 		t.Fatalf("expected cursor row id=2")
 	}
@@ -106,9 +106,51 @@ func TestServerConfigAndWidgetData(t *testing.T) {
 	}
 }
 
-func fetchWidgetData(t *testing.T, baseURL string, query url.Values) dataResponse {
+func TestServerPathPrefix(t *testing.T) {
+	db := setupSQLiteDB(t)
+	providerRegistry := providers.Registry{
+		"db": sqlprovider.NewWithDB(db),
+	}
+
+	cfg := sampleConfig()
+	cfg.PathPrefix = "/rapidmin"
+	app, err := New(cfg, providerRegistry)
+	if err != nil {
+		t.Fatalf("server init: %v", err)
+	}
+
+	srv := httptest.NewServer(app.Handler())
+	t.Cleanup(srv.Close)
+
+	resp, err := http.Get(srv.URL + "/rapidmin/api/config")
+	if err != nil {
+		t.Fatalf("config request: %v", err)
+	}
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("config status: %d", resp.StatusCode)
+	}
+
+	query := url.Values{}
+	query.Add("age.gt", "40")
+	dataResp := fetchWidgetData(t, srv.URL, "/rapidmin", query)
+	if dataResp.Total != 1 {
+		t.Fatalf("expected 1 row, got %d", dataResp.Total)
+	}
+
+	resp, err = http.Get(srv.URL + "/rapidmin/anything/here")
+	if err != nil {
+		t.Fatalf("html request: %v", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("html status: %d", resp.StatusCode)
+	}
+}
+
+func fetchWidgetData(t *testing.T, baseURL, prefix string, query url.Values) dataResponse {
 	t.Helper()
-	endpoint := baseURL + "/api/widgets/users_table"
+	endpoint := baseURL + prefix + "/api/widgets/users_table"
 	if len(query) > 0 {
 		endpoint += "?" + query.Encode()
 	}

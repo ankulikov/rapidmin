@@ -29,7 +29,7 @@ func (s *Server) handleWidgetData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widgetID, ok := parseWidgetID(r.URL.Path)
+	widgetID, ok := s.parseWidgetID(r.URL.Path)
 	if !ok {
 		http.NotFound(w, r)
 		return
@@ -63,8 +63,8 @@ func (s *Server) handleWidgetData(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(data)
 }
 
-func parseWidgetID(path string) (string, bool) {
-	const prefix = "/api/widgets/"
+func (s *Server) parseWidgetID(path string) (string, bool) {
+	prefix := s.apiWidgetsPrefix()
 	if !strings.HasPrefix(path, prefix) {
 		return "", false
 	}

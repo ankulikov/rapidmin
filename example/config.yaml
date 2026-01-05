@@ -1,4 +1,5 @@
 title: "Rapidmin Example"
+path_prefix: "admin"
 
 providers:
   db:

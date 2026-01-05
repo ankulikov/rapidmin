@@ -1,5 +1,6 @@
 {
   "title": "Rapidmin (Stub)",
+  "path_prefix": "",
   "menu": [
     { "title": "Users", "page": "users" },
     { "title": "Reports", "page": "reports" }
