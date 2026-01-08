@@ -5,11 +5,10 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/ankulikov/rapidmin/backend/pkg"
 	"github.com/ankulikov/rapidmin/backend/pkg/config"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
-
-	"github.com/ankulikov/rapidmin/backend/app"
 )
 
 func main() {
@@ -22,7 +21,7 @@ func main() {
 		log.Fatalf("load config error: %v", err)
 	}
 
-	srv, err := app.NewServer(cfg)
+	srv, err := pkg.NewServer(cfg)
 	if err != nil {
 		log.Fatalf("init server error: %v", err)
 	}
