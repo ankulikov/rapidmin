@@ -51,7 +51,7 @@
               {
                 "id": "created",
                 "title": "Created between",
-                "type": "date",
+                "type": "datetime",
                 "target": "created_at",
                 "operators": ["between", "before", "after"]
               },

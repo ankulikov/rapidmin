@@ -87,6 +87,16 @@ filters:
     operators: [contains]
 ```
 
+Datetime filters use Unix timestamps (seconds) in query params and the UI renders a date-time picker:
+```yaml
+filters:
+  - id: created_at
+    title: "Created"
+    type: datetime
+    target: created_at
+    operators: [between, before, after]
+```
+
 ## API summary
 - `GET /api/config` returns config JSON (without provider details).
 - `GET /api/widgets/:id` returns widget data.

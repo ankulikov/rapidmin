@@ -131,7 +131,7 @@ function renderFilterInput(
         );
     }
 
-    const inputType = filter.type === "number" ? "number" : filter.type === "date" ? "date" : "text";
+    const inputType = resolveInputType(filter.type);
     if (operator === "between") {
         return (
             <>
@@ -230,11 +230,16 @@ export function parseFilterParams(filters: FilterSpec[], search: string): Filter
         const id = dotIndex === -1 ? key : key.slice(0, dotIndex);
         const operator = dotIndex === -1 ? undefined : key.slice(dotIndex + 1);
         if (!filterIndex[id]) continue;
+        const spec = filterIndex[id];
         hasFilters = true;
-        const current = state[id] ?? {operator: resolveOperators(filterIndex[id])[0], values: []};
+        const current = state[id] ?? {operator: resolveOperators(spec)[0], values: []};
+        const normalizedValue = normalizeFilterValue(spec, value);
+        if (normalizedValue === "") {
+            continue;
+        }
         state[id] = {
             operator: operator ?? current.operator,
-            values: [...current.values, value].filter((item) => item !== ""),
+            values: [...current.values, normalizedValue].filter((item) => item !== ""),
         };
     }
     if (!hasFilters) {
@@ -262,13 +267,63 @@ export function appendFilters(
         if (operator === "between" || spec.type === "select_multi") {
             filter.values.forEach((value) => {
                 if (value !== "") {
-                    params.append(key, value);
+                    const serializedValue = serializeFilterValue(spec, value);
+                    if (serializedValue !== "") {
+                        params.append(key, serializedValue);
+                    }
                 }
             });
             return;
         }
         if (filter.values[0] !== "") {
-            params.append(key, filter.values[0]);
+            const serializedValue = serializeFilterValue(spec, filter.values[0]);
+            if (serializedValue !== "") {
+                params.append(key, serializedValue);
+            }
         }
     });
+}
+
+function resolveInputType(type: string) {
+    if (type === "number") return "number";
+    if (type === "date") return "date";
+    if (type === "datetime") return "datetime-local";
+    return "text";
+}
+
+function normalizeFilterValue(spec: FilterSpec, value: string): string {
+    if (spec.type !== "datetime") {
+        return value;
+    }
+    return fromUnixTimestamp(value);
+}
+
+function serializeFilterValue(spec: FilterSpec, value: string): string {
+    if (spec.type !== "datetime") {
+        return value;
+    }
+    if (/^\d+$/.test(value)) {
+        return value;
+    }
+    return toUnixTimestamp(value);
+}
+
+function fromUnixTimestamp(value: string): string {
+    if (!/^\d+$/.test(value)) {
+        return value;
+    }
+    const numberValue = Number(value);
+    const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+    const localISOTime = (new Date(numberValue * 1000- tzoffset)).toISOString().slice(0, 16);
+
+    console.log(localISOTime); // "2023-09-01T11:00"
+    return localISOTime;
+}
+
+function toUnixTimestamp(value: string): string {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+        return "";
+    }
+    return Math.floor(date.getTime() / 1000).toString();
 }

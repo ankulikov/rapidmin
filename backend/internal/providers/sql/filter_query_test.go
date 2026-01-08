@@ -171,6 +171,14 @@ func TestMakeFilterCondOperators(t *testing.T) {
 			expectedArgs: []any{"2024-01-01", "2024-01-31"},
 		},
 		{
+			name:         "datetime between",
+			spec:         config.FilterSpec{ID: "created", Target: "created_at", Type: "datetime"},
+			filter:       providers.Filter{Name: "created", Operator: "between", Values: []string{"1710000000", "1710003600"}},
+			dbName:       "sqlite3",
+			expectedSQL:  "SELECT * FROM src WHERE created_at BETWEEN ? AND ?",
+			expectedArgs: []any{int64(1710000000), int64(1710003600)},
+		},
+		{
 			name:         "in",
 			spec:         config.FilterSpec{ID: "tags", Target: "tags", Type: "select_multi"},
 			filter:       providers.Filter{Name: "tags", Operator: "in", Values: []string{"vip", "active"}},
