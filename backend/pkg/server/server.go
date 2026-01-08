@@ -7,8 +7,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/ankulikov/rapidmin/internal/config"
-	"github.com/ankulikov/rapidmin/internal/providers"
+	"github.com/ankulikov/rapidmin/backend/pkg/config"
+	"github.com/ankulikov/rapidmin/backend/pkg/providers"
 )
 
 //go:embed web/index.html

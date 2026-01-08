@@ -1,13 +1,13 @@
-package app
+package pkg
 
 import (
 	"context"
 	"fmt"
 
-	"github.com/ankulikov/rapidmin/internal/config"
-	"github.com/ankulikov/rapidmin/internal/providers"
-	sqlprovider "github.com/ankulikov/rapidmin/internal/providers/sql"
-	"github.com/ankulikov/rapidmin/internal/server"
+	"github.com/ankulikov/rapidmin/backend/pkg/config"
+	"github.com/ankulikov/rapidmin/backend/pkg/providers"
+	sqlprovider "github.com/ankulikov/rapidmin/backend/pkg/providers/sql"
+	"github.com/ankulikov/rapidmin/backend/pkg/server"
 )
 
 func NewServer(cfg config.AppConfig) (*server.Server, error) {

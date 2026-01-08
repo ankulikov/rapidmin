@@ -3,7 +3,7 @@ package providers
 import (
 	"context"
 
-	"github.com/ankulikov/rapidmin/internal/config"
+	"github.com/ankulikov/rapidmin/backend/pkg/config"
 )
 
 type DataRequest struct {

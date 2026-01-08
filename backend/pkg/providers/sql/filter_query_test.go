@@ -6,8 +6,8 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 
-	"github.com/ankulikov/rapidmin/internal/config"
-	"github.com/ankulikov/rapidmin/internal/providers"
+	"github.com/ankulikov/rapidmin/backend/pkg/config"
+	"github.com/ankulikov/rapidmin/backend/pkg/providers"
 )
 
 func TestMakeFilterCondDefaults(t *testing.T) {

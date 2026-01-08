@@ -5,11 +5,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ankulikov/rapidmin/internal/config"
+	"github.com/ankulikov/rapidmin/backend/pkg/config"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 
-	"github.com/ankulikov/rapidmin/app"
+	"github.com/ankulikov/rapidmin/backend/app"
 )
 
 func main() {
