@@ -11,9 +11,9 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
 
-	"github.com/ankulikov/rapidmin/backend/pkg/config"
-	"github.com/ankulikov/rapidmin/backend/pkg/providers"
-	sqlprovider "github.com/ankulikov/rapidmin/backend/pkg/providers/sql"
+	"github.com/ankulikov/rapidmin/config"
+	"github.com/ankulikov/rapidmin/providers"
+	sqlprovider "github.com/ankulikov/rapidmin/providers/sql"
 )
 
 type dataResponse struct {

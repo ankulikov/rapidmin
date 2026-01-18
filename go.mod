@@ -1,4 +1,4 @@
-module github.com/ankulikov/rapidmin/backend
+module github.com/ankulikov/rapidmin
 
 go 1.22
 

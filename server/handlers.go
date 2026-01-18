@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ankulikov/rapidmin/backend/pkg/config"
-	"github.com/ankulikov/rapidmin/backend/pkg/providers"
+	"github.com/ankulikov/rapidmin/config"
+	"github.com/ankulikov/rapidmin/providers"
 )
 
 const defaultLimit = 50

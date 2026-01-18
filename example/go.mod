@@ -3,7 +3,7 @@ module github.com/ankulikov/rapidmin/example
 go 1.22
 
 require (
-	github.com/ankulikov/rapidmin/backend v0.0.0
+	github.com/ankulikov/rapidmin v0.0.0
 	github.com/mattn/go-sqlite3 v1.14.33
 )
 
@@ -15,4 +15,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/ankulikov/rapidmin/backend => ../backend
+replace github.com/ankulikov/rapidmin => ../

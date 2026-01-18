@@ -10,8 +10,8 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 
-	"github.com/ankulikov/rapidmin/backend/pkg/config"
-	"github.com/ankulikov/rapidmin/backend/pkg/providers"
+	"github.com/ankulikov/rapidmin/config"
+	"github.com/ankulikov/rapidmin/providers"
 )
 
 type Provider struct {

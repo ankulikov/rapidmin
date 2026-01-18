@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/ankulikov/rapidmin/backend/pkg/config"
+	"github.com/ankulikov/rapidmin/config"
 	_ "github.com/mattn/go-sqlite3"
 
-	"github.com/ankulikov/rapidmin/backend/pkg"
+	"github.com/ankulikov/rapidmin"
 )
 
 const (
@@ -80,7 +80,7 @@ func startServer() error {
 		log.Fatalf("load config error: %v", err)
 	}
 
-	srv, err := pkg.NewServer(cfg)
+	srv, err := rapidmin.NewServer(cfg)
 	if err != nil {
 		return err
 	}

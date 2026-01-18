@@ -8,8 +8,8 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ankulikov/rapidmin/backend/pkg/config"
-	"github.com/ankulikov/rapidmin/backend/pkg/providers"
+	"github.com/ankulikov/rapidmin/config"
+	"github.com/ankulikov/rapidmin/providers"
 )
 
 func TestBuildFilterConditions(t *testing.T) {
