@@ -19,6 +19,7 @@ const indexPath = "web/index.html"
 type Server struct {
 	cfg          config.AppConfig
 	providers    providers.Registry
+	mux          *http.ServeMux
 	indexHTML    []byte
 	pathPrefix   string
 	renderedOnce sync.Once
@@ -30,6 +31,12 @@ type Option func(*Server)
 func WithPathPrefix(prefix string) Option {
 	return func(s *Server) {
 		s.pathPrefix = normalizePrefix(prefix)
+	}
+}
+
+func WithMux(mux *http.ServeMux) Option {
+	return func(s *Server) {
+		s.mux = mux
 	}
 }
 
@@ -50,20 +57,23 @@ func New(cfg config.AppConfig, providers providers.Registry, opts ...Option) (*S
 		opt(srv)
 	}
 
+	if srv.mux == nil {
+		srv.mux = http.DefaultServeMux
+	}
+
 	return srv, nil
 }
 
 func (s *Server) Handler() http.Handler {
-	mux := http.NewServeMux()
-	mux.HandleFunc(s.apiConfigPath(), s.handleConfig)
-	mux.HandleFunc(s.apiWidgetsPrefix(), s.handleWidgetData)
+	s.mux.HandleFunc(s.apiConfigPath(), s.handleConfig)
+	s.mux.HandleFunc(s.apiWidgetsPrefix(), s.handleWidgetData)
 	if s.pathPrefix == "" {
-		mux.HandleFunc("/", s.handleIndex)
+		s.mux.HandleFunc("/", s.handleIndex)
 	} else {
-		mux.HandleFunc(s.pathPrefix, s.handleIndex)
-		mux.HandleFunc(s.pathPrefix+"/", s.handleIndex)
+		s.mux.HandleFunc(s.pathPrefix, s.handleIndex)
+		s.mux.HandleFunc(s.pathPrefix+"/", s.handleIndex)
 	}
-	return mux
+	return s.mux
 }
 
 func (s *Server) apiPrefix() string {
